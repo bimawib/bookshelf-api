@@ -76,6 +76,21 @@ const addBookHandler = (request, h) => {
 };
 
 const getAllBookHandler = (request, h) => {
+  const { reading } = request.query;
+
+  if (reading !== undefined) {
+    const filteredBook = books.filter((b) => b.reading == reading)
+      .map(({ id, name, publisher }) => ({ id, name, publisher }));
+    const response = h.response({
+      status: 'success',
+      data: {
+        books: filteredBook,
+      },
+    });
+    response.code(200);
+    return response;
+  }
+
   const arrayOfBooks = books.map(({ id, name, publisher }) => ({ id, name, publisher }));
 
   const response = h.response({
@@ -90,6 +105,7 @@ const getAllBookHandler = (request, h) => {
 
 const getBookByIdHandler = (request, h) => {
   const { id } = request.params;
+
   const book = books.filter((b) => b.id === id)[0];
 
   if (book !== undefined) {
